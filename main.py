@@ -4,26 +4,23 @@ from aiohttp import web
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
-# Получаем токен из переменных окружения
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 if not BOT_TOKEN:
-    raise RuntimeError("BOT_TOKEN environment variable is not set")
+    raise RuntimeError("BOT_TOKEN environment variable not set")
 
-# Получаем порт, который Render выдаёт в переменную PORT
-PORT = int(os.getenv("PORT", 8000))  # если нет, будет 8000
+PORT = int(os.getenv("PORT", 8000))
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
 @dp.message(Command("start"))
 async def start_handler(message: types.Message):
-    await message.answer("Привет! Я бот.")
+    await message.answer("Привет! Бот работает.")
 
-# Функция запуска polling в фоне при старте веб-сервера
 async def on_startup(app):
+    # Запускаем polling бота в фоне при старте веб-сервера
     asyncio.create_task(dp.start_polling(bot))
 
-# Обработка HTTP запроса по корню — просто ответ
 async def handle_root(request):
     return web.Response(text="Bot is running")
 
