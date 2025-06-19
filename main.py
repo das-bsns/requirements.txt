@@ -1,7 +1,7 @@
 import os
+import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.utils import executor
 from parser import parse_ned_kg
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -34,7 +34,6 @@ async def callbacks(call: types.CallbackQuery):
 
     if call.data == "like":
         await bot.answer_callback_query(call.id, "Спасибо! Контакт владельца отправлен в личку.")
-        # Тут можно вставить оплату и выдачу номера
     elif call.data == "next":
         idx += 1
         if idx >= len(listings):
@@ -60,5 +59,8 @@ async def send_listing(chat_id, listing):
     )
     await bot.send_photo(chat_id, photo=listing['image'], caption=caption, reply_markup=get_keyboard(), parse_mode="HTML")
 
+async def main():
+    await dp.start_polling()
+
 if __name__ == "__main__":
-    executor.start_polling(dp, skip_updates=True)
+    asyncio.run(main())
