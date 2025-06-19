@@ -1,16 +1,14 @@
 import os
 import asyncio
 from aiogram import Bot, Dispatcher, types
+from aiogram.filters import Command
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-if not BOT_TOKEN:
-    raise Exception("Укажите переменную окружения BOT_TOKEN")
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
-dp.bot = bot
 
-@dp.message(commands=["start"])
+@dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     text = (
         "Привет! Я помогу с недвижимостью.\n\n"
@@ -28,10 +26,7 @@ async def echo_all(message: types.Message):
     await message.answer("Спасибо за сообщение. Мы свяжемся с вами.")
 
 async def main():
-    try:
-        await dp.start_polling()
-    finally:
-        await bot.session.close()
+    await dp.start_polling(bot)
 
 if __name__ == "__main__":
     asyncio.run(main())
